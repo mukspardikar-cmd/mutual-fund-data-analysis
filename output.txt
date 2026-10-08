@@ -1,0 +1,202 @@
+﻿
+=== STAGE 1 ===
+Rows, Columns: (814, 20)
+scheme_name          str
+min_sip            int64
+min_lumpsum        int64
+expense_ratio    float64
+fund_size_cr     float64
+fund_age_yr        int64
+fund_manager         str
+sortino              str
+alpha                str
+sd                   str
+beta                 str
+sharpe               str
+risk_level         int64
+amc_name             str
+rating             int64
+category             str
+sub_category         str
+returns_1yr      float64
+returns_3yr      float64
+returns_5yr      float64
+dtype: object
+
+Missing values per column:
+sortino         23
+alpha           42
+sd              24
+beta            42
+sharpe          23
+returns_3yr     21
+returns_5yr    167
+dtype: int64
+
+% missing:
+sortino         2.8
+alpha           5.2
+sd              2.9
+beta            5.2
+sharpe          2.8
+returns_3yr     2.6
+returns_5yr    20.5
+dtype: float64
+
+Dropped 21 funds with no 3-year return
+Suspect rows (3yr return = 32.4 or age < 3): 11
+
+=== STAGE 2 ===
+                  mean   median    min       max      std   mode
+returns_1yr       3.93     4.40 -19.70    130.80     6.80   5.40
+returns_3yr      18.35    18.25   3.30     71.40    12.09   3.90
+expense_ratio     0.72     0.63   0.00      2.59     0.48   0.21
+fund_age_yr       8.52    10.00   3.00     17.00     2.44  10.00
+risk_level        4.46     6.00   1.00      6.00     1.80   6.00
+fund_size_cr   3932.81  1023.50   2.38  57052.00  7285.94  90.00
+Skewness:
+ returns_1yr      8.29
+returns_3yr      0.51
+expense_ratio    0.74
+fund_age_yr     -1.01
+risk_level      -0.58
+fund_size_cr     3.55
+dtype: float64
+
+1-yr return outliers: 78
+                                     scheme_name category  returns_1yr
+                  Bank of India Credit Risk Fund     Debt        130.8
+ Bank of India Short Term Income û Direct Growth     Debt         28.3
+                   ICICI Pru Infrastructure Fund   Equity         24.3
+Kotak Infrastructure & Ecoc. Reform-SP-DirGrowth   Equity         23.2
+          Bank of India Conservative Hybrid Fund   Hybrid         22.3
+
+Fund age counts (note the pile-up at 10):
+fund_age_yr
+3      24
+4      88
+5      51
+6      17
+7      19
+8      34
+9      38
+10    505
+11      1
+12      1
+14      2
+17      2
+
+=== STAGE 3 ===
+      returns_3yr_n  returns_1yr_clipped_n  expense_ratio_n  age_distance_n  risk_level_n
+min            0.00                   0.00             0.00             0.0          0.00
+max            1.00                   1.00             1.00             1.0          1.00
+mean           0.22                   0.48             0.28             0.3          0.69
+
+=== STAGE 4 ===
+Weights: {'s_return3': 0.4, 's_expense': 0.2, 's_age': 0.1, 's_consistent': 0.15, 's_risk': 0.15}
+
+Correlation of each factor with final score:
+s_consistent    0.73
+s_expense       0.55
+s_risk          0.43
+s_age           0.18
+s_return3       0.01
+dtype: float64
+
+Sensitivity: risk-heavy weighting keeps 2/30 of the same funds
+
+=== STAGE 5 ===
+ rank                                         scheme_name category      risk_label  expense_ratio  returns_3yr     score
+    1                                Quant Small Cap Fund   Equity       Very High           0.64         71.4 72.926202
+    2 Sundaram Emerging Small Cap Series III û Dir Growth   Equity Low to Moderate           0.75         43.7 71.457764
+    3                           Quant Infrastructure Fund   Equity       Very High           0.64         61.5 67.157419
+    4                                 Tata Small Cap Fund   Equity       Very High           0.26         44.1 64.345916
+    5  Sundaram Emerging Small Cap Series IV û Dir Growth   Equity Moderately High           0.75         41.4 63.483176
+    6                       Quant Tax Plan- Direct Growth   Equity       Very High           0.57         54.9 62.735723
+    7            ICICI Pru BHARAT 22 FOF  û Direct Growth    Other       Very High           0.08         35.0 62.092825
+    8                  ICICI Pru India Opportunities Fund   Equity       Very High           0.73         44.7 59.821728
+    9                                Quant Flexi Cap Fund   Equity       Very High           0.58         47.7 59.792183
+   10                    AXIS FTP û Series 104 û 1112Days     Debt Low to Moderate           0.13         14.5 58.600825
+   11                                  Quant Mid Cap Fund   Equity       Very High           0.63         45.1 58.340867
+   12                         Nippon India Small Cap Fund   Equity       Very High           0.86         47.6 58.010137
+   13   Sundaram Emerging Small Cap Series V û Dir Growth   Equity       Very High           0.79         42.3 57.910808
+   14  Sundaram Emerging Small Cap Series VI û Dir Growth   Equity       Very High           0.77         41.9 57.876495
+   15                              Quant Multi Asset Fund   Hybrid       Very High           0.56         42.6 57.828735
+   16                PGIM India Midcap Opportunities Fund   Equity       Very High           0.46         42.9 57.699850
+   17                            Edelweiss Small Cap Fund   Equity       Very High           0.60         42.5 57.523886
+   18                                   Quant Active Fund   Equity       Very High           0.58         45.5 57.160309
+   19                                 HSBC Small Cap Fund   Equity       Very High           0.77         44.7 57.079320
+   20                                 HDFC Small Cap Fund   Equity       Very High           0.80         43.5 56.942940
+   21                             Kotak India Growth Fund   Equity       Very High           0.34         35.5 56.744854
+   22                                     SBI Contra Fund   Equity       Very High           0.91         43.4 56.612220
+   23                        SBI Long Term Advantage Fund   Equity Moderately High           1.75         43.3 56.261828
+   24                      Sundaram LT Tax Advantage Fund   Equity       Very High           1.30         46.9 56.166347
+   25           Motilal Oswal Nifty Midcap 150 Index Fund    Other       Very High           0.22         33.7 55.705136
+   26                                HDFC Focused 30 Fund   Equity       Very High           0.54         35.8 55.236315
+   27                   Sundaram LT MC Tax Advantage Fund   Equity       Very High           1.23         44.8 55.103847
+   28    Kotak Infrastructure & Ecoc. Reform-SP-DirGrowth   Equity       Very High           1.00         39.7 55.021952
+   29                   ICICI Pru Thematic Advantage Fund    Other       Very High           0.25         35.4 54.792410
+   30                             ICICI Pru Smallcap Fund   Equity       Very High           0.81         41.8 54.758507
+
+Top-30 by category:
+ category
+Equity    25
+Other      3
+Debt       1
+Hybrid     1
+
+Top-30 by risk:
+ risk_label
+Very High          26
+Low to Moderate     2
+Moderately High     2
+
+Top-30 by AMC:
+ amc_name
+Quant Mutual Fund               7
+Sundaram Mutual Fund            6
+ICICI Prudential Mutual Fund    4
+HDFC Mutual Fund                2
+Kotak Mahindra Mutual Fund      2
+
+=== STAGE 7 ANSWERS ===
+1) AUM by fund type (Rs Cr):
+ fund_type
+Equity               1337434.0
+Debt                 1173808.0
+Hybrid                457949.0
+Other                  82229.0
+Solution Oriented      24037.0
+   Leader: Equity, leads #2 by 163,626 Cr
+
+2) Top fund managers by AUM (Rs Cr):
+ fund_manager
+Rahul Goswami     131306.0
+Sankaran Naren    131044.0
+R Srinivasan      118122.0
+
+3) Avg expense ratio by fund type:
+ fund_type
+Debt                 0.36
+Other                0.46
+Hybrid               0.77
+Solution Oriented    1.01
+Equity               1.06
+   Lowest sub-category: Fixed Maturity Plans 0.06
+
+4) Best 1-yr return: Bank of India Credit Risk Fund 130.8 %
+   (Outlier - next best: Bank of India Short Term Income û Direct Growth 28.3 %)
+
+5) Avg min SIP (SIP funds only): 554  | median 500
+   Median min lump-sum: 5000 | mean 3056
+
+6) Return vs risk by category:
+                   avg_3yr  avg_risk_level  avg_expense  funds
+fund_type                                                     
+Debt                  5.79            2.45         0.36    258
+Equity               29.72            5.93         1.06    305
+Hybrid               14.82            4.13         0.77    113
+Other                20.79            5.51         0.46     79
+Solution Oriented    17.64            5.26         1.01     27
+
+Done. Files: cleaned_funds.csv, top30_funds.xlsx, charts/
